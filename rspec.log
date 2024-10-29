@@ -2719,7 +2719,7 @@ Failures:
        [36m# /home/ec2-user/.rvm/gems/ruby-3.1.2/gems/capybara-3.37.1/lib/capybara/dsl.rb:52:in `fill_in'[0m
        [36m# ./spec/system/03_finishing_touches_spec.rb:424:in `block (4 levels) in <main>'[0m
 
-Finished in 17.14 seconds (files took 1.17 seconds to load)
+Finished in 9.59 seconds (files took 1.15 seconds to load)
 [31m199 examples, 180 failures[0m
 
 Failed examples:

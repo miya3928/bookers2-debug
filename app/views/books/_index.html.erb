@@ -8,10 +8,15 @@
     </tr>
   </thead>
   <tbody>
-    <%  books.each do |book| %>
+    <% books.each do |book| %>
       <tr>
-        <td><%= link_to(@book.user) do %>
-          <%= image_tag book.user.get_profile_image, size:'50x50' %>
+        <td>
+          <% if book.user.present? %>
+            <%= link_to(book.user) do %>
+              <%= image_tag book.user.get_profile_image, size: '50x50' %>
+            <% end %>
+          <% else %>
+            <p>No User</p>
           <% end %>
         </td>
         <td><%= link_to book.title, book_path(book) %></td>
