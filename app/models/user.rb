@@ -9,6 +9,7 @@ class User < ApplicationRecord
          authentication_keys: [:name] 
   
   has_many :books, dependent: :destroy
+  has_many :favorites, dependent: :destroy
   has_one_attached :profile_image
   
  with_options on: :create do  
