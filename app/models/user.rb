@@ -10,6 +10,7 @@ class User < ApplicationRecord
   
   has_many :books, dependent: :destroy
   has_many :favorites, dependent: :destroy
+  has_many :book_comments, dependent: :destroy
   has_one_attached :profile_image
   
  with_options on: :create do  
@@ -21,7 +22,7 @@ end
   validates :name, length: { minimum: 2, maximum: 20 }, uniqueness: true
   validates :introduction, length: { maximum: 50 }
 
-  def get_profile_image(width: 100, height: 100)
+  def get_profile_image(width = 100, height = 100)
     # デフォルト画像が未添付の場合、ファイルパスを指定して添付
     unless profile_image.attached?
       file_path = Rails.root.join('app', 'assets', 'images', 'no_image.jpg')
