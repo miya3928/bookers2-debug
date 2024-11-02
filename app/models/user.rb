@@ -1,23 +1,37 @@
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         authentication_keys: [:name] 
+         :recoverable, :rememberable, :validatable,
+         authentication_keys: [:name]
   
   has_many :books, dependent: :destroy
   has_many :favorites, dependent: :destroy
   has_many :book_comments, dependent: :destroy
+
+  # フォローフォロワー機能
+  has_many :follower_relationships, class_name: "Relationship", foreign_key: "follower_id", dependent: :destroy
+  has_many :followed_relationships, class_name: "Relationship", foreign_key: "followed_id", dependent: :destroy
+  has_many :followings, through: :follower_relationships, source: :followed
+  has_many :followers, through: :followed_relationships, source: :follower
+  
+  def follow(user)
+    follower_relationships.find_or_create_by(followed_id: user.id)
+  end
+  
+  def unfollow(user)
+    follower_relationships.find_by(followed_id: user.id)&.destroy
+  end
+  
+  def following?(user)
+    followings.include?(user)
+  end  
+
   has_one_attached :profile_image
   
- with_options on: :create do  
-  validates :email, uniqueness: true
-  validates :password, length: { minimum: 6 }
-  validates :name, length: { minimum: 2, maximum: 20 }, uniqueness: true
-end
+  with_options on: :create do  
+    validates :email, uniqueness: true
+    validates :password, length: { minimum: 6 }
+    validates :name, length: { minimum: 2, maximum: 20 }, uniqueness: true
+  end
 
   validates :name, length: { minimum: 2, maximum: 20 }, uniqueness: true
   validates :introduction, length: { maximum: 50 }
