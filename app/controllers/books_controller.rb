@@ -6,7 +6,6 @@ class BooksController < ApplicationController
     @book = Book.new
   end
 
-  def show
     def show
       @book = Book.find(params[:id])       # 書籍データを1回の検索で取得
       @user = @book.user                   # 書籍に関連するユーザーを取得
@@ -18,7 +17,7 @@ class BooksController < ApplicationController
       end  
       
       # 今日の閲覧履歴がない場合に閲覧数を記録
-      unless ViewCount.where(created_at: Time.zone.now.all_day).find_by(user_id: current_user.id, book_id: @book.id)
+      unless ReadCount.where(created_at: Time.zone.now.all_day).find_by(user_id: current_user.id, book_id: @book.id)
         current_user.view_counts.create(book_id: @book.id)
       end  
     end
