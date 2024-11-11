@@ -14,7 +14,13 @@ class BooksController < ApplicationController
   end
 
   def index
-    @books = Book.all
+    to = Time.current.at_end_of_day
+    from = (to - 6.day).at_beginning_of_day
+  
+    @books = Book.left_joins(:favorites)  # favoritesとのLEFT JOINを使用
+                 .group('books.id')        # books.idでグループ化
+                 .order('COUNT(favorites.id) DESC')  # いいねの数で降順に並べ替え
+  
     @book = Book.new
     @user = current_user
   end
