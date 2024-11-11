@@ -7,11 +7,21 @@ class BooksController < ApplicationController
   end
 
   def show
-
-    @book = Book.find(params[:id])
-    @user = @book.user
-    @book_comment = BookComment.new
-  end
+    def show
+      @book = Book.find(params[:id])       # 書籍データを1回の検索で取得
+      @user = @book.user                   # 書籍に関連するユーザーを取得
+      @book_comment = BookComment.new      # コメント用のオブジェクトを作成
+      
+      # 過去に一度も閲覧していない場合に閲覧数を記録
+      unless ReadCount.find_by(user_id: current_user.id, book_id: @book.id)
+        current_user.read_counts.create(book_id: @book.id)
+      end  
+      
+      # 今日の閲覧履歴がない場合に閲覧数を記録
+      unless ViewCount.where(created_at: Time.zone.now.all_day).find_by(user_id: current_user.id, book_id: @book.id)
+        current_user.view_counts.create(book_id: @book.id)
+      end  
+    end
 
   def index
     to = Time.current.at_end_of_day
